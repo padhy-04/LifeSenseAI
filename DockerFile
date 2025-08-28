@@ -1,0 +1,39 @@
+# Use an official Python runtime as a parent image
+FROM python:3.10-slim-buster
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Install system dependencies for OpenCV. These are crucial for image
+# processing libraries like 'opencv-python' to function correctly.
+# libgl1-mesa-glx: Provides OpenGL support, often required by OpenCV.
+# libglib2.0-0: A core library from GLib, often a dependency for various image/graphics operations.
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    # Clean up APT caches to reduce image size
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file into the container at /app
+# This step is done separately to leverage Docker's build cache.
+COPY requirements.txt .
+
+# Install any needed Python packages specified in requirements.txt.
+# Using --no-cache-dir reduces the size of the Docker image.
+# NLTK data: Download necessary NLTK data for the NLP service.
+RUN pip install --no-cache-dir -r requirements.txt \
+    && python -c "import nltk; nltk.download('vader_lexicon'); nltk.download('punkt'); nltk.download('stopwords')"
+
+# Copy the rest of the application code into the container
+# This includes the 'app' directory, the 'models' directory (with your dummy models),
+# and any other necessary files.
+COPY . /app
+
+# Expose the port FastAPI will run on
+EXPOSE 8000
+
+# Command to run the application using Uvicorn.
+# `app.main:app` refers to the 'app' object inside 'main.py' within the 'app' directory.
+# `--host 0.0.0.0` binds the server to all available network interfaces, making it accessible from outside the container.
+# `--port 8000` specifies the port to listen on.
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

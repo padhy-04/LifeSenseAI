@@ -1,0 +1,12 @@
+    fastapi==0.111.0
+    uvicorn==0.30.1
+    python-multipart==0.0.9 # For handling file uploads in FastAPI
+    pydantic==2.7.3
+    pydantic-settings==2.3.4 # For managing settings from environment variables
+    scikit-learn==1.5.0 # For NLP dummy model (Logistic Regression)
+    nltk==3.8.1 # For NLP (VADER, tokenization, stopwords)
+    opencv-python==4.9.0.80 # For image processing (OCR, Pose Detection)
+    torch==2.3.0 # For PyTorch dummy models (OCR, Pose, LLM)
+    python-dotenv==1.0.1 # For loading .env files
+    requests==2.32.3 # For fetching images from URLs in OCR service
+    numpy==1.26.4 # Often a dependency for ML libraries

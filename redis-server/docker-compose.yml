@@ -1,0 +1,21 @@
+version: '3.8' # Specify the Docker Compose file format version
+
+services:
+  redis:
+    image: 'redis:7-alpine' # Use the official Redis image, Alpine variant for smaller size
+    container_name: wellness_redis # A friendly name for your container
+    restart: always    ports ,
+      - "${REDIS_PORT}:6379" # Map host port to container port. 6379 is the default Redis port.
+    volumes:
+      # Persist Redis data to a named volume. This prevents data loss if the container is removed.
+      - redis_data:/data
+    environment:
+
+       REDIS_PASSWORD=${REDIS_PASSWORD}
+      
+      - TZ=Asia/Kolkata # Set timezone for consistency, e.g., for BullMQ job scheduling
+
+volumes:
+  redis_data: # Define the named volume
+    driver: local
+
